@@ -1,0 +1,53 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="wechat:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/wechat_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="wechat/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="wechat" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="module" name="wechatlib" module-name="wechat" />
+          <element id="library" level="module" name="wechatLib" module-name="wechat" />
+          <element id="library" level="module" name="JUnit4" module-name="wechat" />
+          <element id="library" level="module" name="webchatLib" module-name="wechat" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/jna-4.1.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/httpcore-4.4.6.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/httpmime-4.5.3.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/javaee-api-7.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/aopalliance-1.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/fluent-hc-4.5.3.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/log4j-api-2.8.2.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/commons-dbcp-1.4.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/commons-pool-1.6.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/httpclient-4.5.3.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/log4j-core-2.8.2.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/commons-codec-1.10.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/jna-platform-4.1.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/commons-logging-1.2.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/httpclient-win-4.5.3.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/httpclient-cache-4.5.3.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-tx-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-aop-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-jms-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-orm-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-oxm-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/commons-collections-3.2.1.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-core-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-jdbc-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-test-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-beans-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-aspects-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-context-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-messaging-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-expression-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-instrument-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-context-support-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/spring-instrument-tomcat-4.3.8.RELEASE.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/wechat/web/WEB-INF/lib/quartz-2.2.1.jar" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
