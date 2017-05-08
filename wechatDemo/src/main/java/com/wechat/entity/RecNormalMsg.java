@@ -5,7 +5,8 @@ package com.wechat.entity;
  * 文本消息类
  */
 public class RecNormalMsg extends RecEntity {
-    private String Content;
+    //文本消息内容
+    public String Content;
 
     public String getContent() {
         return Content;
@@ -13,5 +14,17 @@ public class RecNormalMsg extends RecEntity {
 
     public void setContent(String content) {
         Content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "RecNormalMsg{" +
+                "ToUserName='" + ToUserName + '\'' +
+                ", Content='" + Content + '\'' +
+                ", FromUserName='" + FromUserName + '\'' +
+                ", CreateTime='" + CreateTime + '\'' +
+                ", MsgType='" + MsgType + '\'' +
+                ", MsgId='" + MsgId + '\'' +
+                '}';
     }
 }

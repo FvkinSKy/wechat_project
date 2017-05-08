@@ -9,7 +9,7 @@ import com.wechat.util.WechatUtil;
  */
 public class WechatController {
     /**
-     *
+     * 获取微信端XML后返回处理后的XML
      * @param recxml
      * @return
      */
