@@ -2,6 +2,7 @@ import com.wechat.entity.RecNormalMsg;
 import com.wechat.util.WechatUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -59,7 +60,8 @@ public class TestCase {
         try {
             Class<?> c = Class.forName("com.wechat.entity.RecNormalMsg");
             normalMsg = (RecNormalMsg) c.newInstance();
-            Field[] f = c.getDeclaredFields();
+//            Field[] f = c.getDeclaredFields();
+            Field[] f = c.getFields();
             for (int i = 0; i < f.length; i++) {
                 Field field = f[i];
                 System.out.println(field.getName());
@@ -91,7 +93,7 @@ public class TestCase {
 //                Method method = c.getMethod("set" + f.getName(), f.getType());
 //                System.out.println(method.getName());
 //            }
-            Field field = c.getField("Content");
+            Field field = c.getField("FromUserName");
             field.setAccessible(true);
             Method method = c.getMethod("set" + field.getName(), field.getType());
             System.out.println(method.getName());
@@ -123,7 +125,7 @@ public class TestCase {
     public void test5() {
         HttpGet httpGet = new HttpGet("http://localhost:9090/wechatDemo/check.do?signature=05e4ff54c7e1491ad3f6cf4e1584c925f6c4b1f0&timestamp=222&nonce=333&echostr=666");
         try {
-            HttpResponse response = HttpClients.createDefault().execute(httpGet);
+            CloseableHttpResponse response = HttpClients.createDefault().execute(httpGet);
             System.out.println(response.getStatusLine().getStatusCode());
             System.out.println(EntityUtils.toString(response.getEntity()));
         } catch (IOException e) {

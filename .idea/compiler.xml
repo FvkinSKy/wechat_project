@@ -14,7 +14,7 @@
     <bytecodeTargetLevel>
       <module name="wechat" target="1.5" />
       <module name="wechatDemo" target="1.7" />
-      <module name="wechatDemo02" target="1.5" />
+      <module name="wechatDemo02" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

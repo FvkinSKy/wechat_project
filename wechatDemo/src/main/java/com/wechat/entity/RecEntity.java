@@ -4,7 +4,7 @@ package com.wechat.entity;
  * Created by a07 on 2017/5/7.
  * 普通消息类父类
  */
-public abstract class RecEntity {
+public class RecEntity {
     //开发者微信号
     public String ToUserName;
     //发送方帐号（一个OpenID）
