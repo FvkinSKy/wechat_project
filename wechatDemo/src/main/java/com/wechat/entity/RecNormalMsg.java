@@ -1,9 +1,12 @@
 package com.wechat.entity;
 
+import javax.persistence.Entity;
+
 /**
  * Created by a07 on 2017/5/7.
  * 文本消息类
  */
+@Entity
 public class RecNormalMsg extends RecEntity {
     //文本消息内容
     public String Content;

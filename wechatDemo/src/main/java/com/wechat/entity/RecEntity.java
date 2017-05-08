@@ -1,9 +1,12 @@
 package com.wechat.entity;
 
+import javax.persistence.Entity;
+
 /**
  * Created by a07 on 2017/5/7.
  * 普通消息类父类
  */
+@Entity
 public class RecEntity {
     //开发者微信号
     public String ToUserName;

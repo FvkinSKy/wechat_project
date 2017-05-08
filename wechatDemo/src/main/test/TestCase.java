@@ -35,7 +35,7 @@ public class TestCase {
                 " <Content>" + encode + "</Content>\n" +
                 " <MsgId>1234567890123456</MsgId>\n" +
                 " </xml>";
-        HttpPost post = new HttpPost("http://localhost:9090/wechatDemo/io.do");
+        HttpPost post = new HttpPost("http://localhost:8080/wechatDemo/io.do");
         try {
             post.setEntity(new StringEntity(send));
             HttpResponse response = HttpClients.createDefault().execute(post);
