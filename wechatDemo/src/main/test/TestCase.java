@@ -1,3 +1,5 @@
+import com.alibaba.fastjson.JSON;
+import com.wechat.entity.AccessTokenEntity;
 import com.wechat.entity.RecNormalMsg;
 import com.wechat.util.WechatUtil;
 import org.apache.http.HttpResponse;
@@ -13,7 +15,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URLEncoder;
 
 /**
@@ -81,31 +82,18 @@ public class TestCase {
         try {
             Class<?> c = Class.forName("com.wechat.entity.RecNormalMsg");
             normalMsg = (RecNormalMsg) c.newInstance();
-//            Method[] methods = c.getMethods();
-//            for (int i = 0; i < methods.length; i++) {
-//                Method m = methods[i];
-//                System.out.println(m.getName());
-//            }
-//            Field[] fields = c.getFields();
-//            for (int i = 0; i < fields.length; i++) {
-//                Field f = fields[i];
-//                System.out.println(f.getName());
-//                Method method = c.getMethod("set" + f.getName(), f.getType());
-//                System.out.println(method.getName());
-//            }
-            Field field = c.getField("FromUserName");
-            field.setAccessible(true);
-            Method method = c.getMethod("set" + field.getName(), field.getType());
-            System.out.println(method.getName());
+            Field field[] = c.getDeclaredFields();
+            Field.setAccessible(field, true);
+            Field fields[] = c.getFields();
+            Field.setAccessible(fields, true);
+            for (int i = 0; i < fields.length; i++) {
+                System.out.println(fields[i].getName());
+            }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
     }
@@ -133,4 +121,35 @@ public class TestCase {
         }
     }
 
+    @Test
+    public void test6() {
+        String json = "{\"access_token\":\"ACCESS_TOKEN\",\"expires_in\":7200}";
+        AccessTokenEntity entity = JSON.parseObject(json, AccessTokenEntity.class);
+        System.out.println(entity);
+    }
+
+    @Test
+    public void test7() throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchFieldException {
+        RecNormalMsg normalMsg = null;
+        Class<?> c = Class.forName("com.wechat.entity.RecNormalMsg");
+        normalMsg = (RecNormalMsg) c.newInstance();
+        RecNormalMsg.class.getDeclaredField("Content").setAccessible(true);
+        Field fields[] = c.getFields();
+        for (int i = 0; i < fields.length; i++) {
+            System.out.println(fields[i].getName());
+        }
+//        Method method[] = c.getMethods();
+//        for (int i=0;i<method.length;i++){
+//            System.out.println(method[i].getName());
+//        }
+//        String send = "<xml>\n" +
+//                " <ToUserName><![CDATA[toUser]]></ToUserName>\n" +
+//                " <FromUserName><![CDATA[fromUser]]></FromUserName> \n" +
+//                " <CreateTime>1348831860</CreateTime>\n" +
+//                " <MsgType><![CDATA[text]]></MsgType>\n" +
+//                " <Content><![CDATA[content]]></Content>\n" +
+//                " <MsgId>1234567890123456</MsgId>\n" +
+//                " </xml>";
+//        WechatUtil.parseXMLtoEntity(send);
+    }
 }

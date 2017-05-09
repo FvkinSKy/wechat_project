@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 @Entity
 public class RecNormalMsg extends RecEntity {
     //文本消息内容
-    public String Content;
+    private String Content;
 
     public String getContent() {
         return Content;
@@ -22,12 +22,7 @@ public class RecNormalMsg extends RecEntity {
     @Override
     public String toString() {
         return "RecNormalMsg{" +
-                "ToUserName='" + ToUserName + '\'' +
-                ", Content='" + Content + '\'' +
-                ", FromUserName='" + FromUserName + '\'' +
-                ", CreateTime='" + CreateTime + '\'' +
-                ", MsgType='" + MsgType + '\'' +
-                ", MsgId='" + MsgId + '\'' +
+                "Content='" + Content + '\'' +
                 '}';
     }
 }

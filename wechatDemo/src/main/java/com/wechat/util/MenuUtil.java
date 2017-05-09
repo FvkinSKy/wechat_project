@@ -2,8 +2,10 @@ package com.wechat.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.wechat.entity.AccessTokenEntity;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
@@ -17,6 +19,9 @@ import java.io.IOException;
  * 发送POST请求到微信服务器，生成自定义菜单
  */
 public class MenuUtil {
+
+    private static AccessTokenEntity entity = AccessTokenEntity.getInstance();
+
     /**
      * 创建自定义菜单
      *
@@ -24,31 +29,28 @@ public class MenuUtil {
      */
     public static boolean buildMenu(String menu) {
         //获取access_token
-        JSONObject accessToken = WechatUtil.getAccessToken();
-        if (accessToken.containsKey("access_token")) {
-            //发送POST请求
-            try {
-                //创建HTTPPOST
-                String url = " https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + accessToken.get("access_token");
-                HttpPost httpPost = new HttpPost(url);
-                //参数
-                httpPost.setEntity(new StringEntity(menu));
-                //获取响应
-                CloseableHttpResponse response = HttpClients.createDefault().execute(httpPost);
-                HttpEntity entity = response.getEntity();
-                String result = EntityUtils.toString(entity);
-                JSONObject jsonObject = JSON.parseObject(result);
-                if (String.valueOf(jsonObject.get("errcode")).equals("0")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("创建自定义菜单失败!!!");
+        String access_token = entity.getAccess_token();
+        //发送POST请求
+        try {
+            //创建HTTPPOST
+            String url = " https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + access_token;
+            HttpPost httpPost = new HttpPost(url);
+            //参数
+            httpPost.setEntity(new StringEntity(menu));
+            //获取响应
+            CloseableHttpResponse response = HttpClients.createDefault().execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            String result = EntityUtils.toString(entity);
+            JSONObject jsonObject = JSON.parseObject(result);
+            if (String.valueOf(jsonObject.get("errcode")).equals("0")) {
+                return true;
+            } else {
+                return false;
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("创建自定义菜单失败!!!");
         }
-        return false;
     }
 
     /**
@@ -81,5 +83,28 @@ public class MenuUtil {
                 "       }]\n" +
                 " }");
         return sb.toString();
+    }
+
+    /**
+     * 删除自定义菜单
+     *
+     * @return
+     */
+    public static boolean delMenu() {
+        String url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=" + entity.getAccess_token();
+        HttpGet httpGet = new HttpGet(url);
+        try {
+            CloseableHttpResponse response = HttpClients.createDefault().execute(httpGet);
+            HttpEntity httpEntity = response.getEntity();
+            String result = EntityUtils.toString(httpEntity);
+            JSONObject object = JSONObject.parseObject(result);
+            if (String.valueOf(object.get("errcode")).equals("0")) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("删除自定义菜单失败!!!" + e.getMessage());
+        }
+        return false;
     }
 }

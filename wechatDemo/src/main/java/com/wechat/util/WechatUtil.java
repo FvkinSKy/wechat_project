@@ -1,7 +1,5 @@
 package com.wechat.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.wechat.entity.RecNormalMsg;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,7 +12,7 @@ import org.dom4j.Element;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -56,20 +54,17 @@ public class WechatUtil {
             //遍历
             for (Iterator<?> it = root.elementIterator(); it.hasNext(); ) {
                 Element element = (Element) it.next();
-                //获取实体类属性
-                Field field = c.getField(element.getName());
-                field.setAccessible(true);
-                field.set(normalMsg, element.getData());
-////                //获取set方法
-//                Method method = c.getMethod("set" + field.getName(), field.getType());
-////                //调用set方法
-//                method.invoke(normalMsg, element.getText());
+                //获取set方法
+                Method method = c.getMethod("set" + element.getName(), String.class);
+                //调用set方法
+                method.invoke(normalMsg, element.getText());
             }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("xml转RecNormalMsg对象失败》》" + e.getMessage());
         }
-        System.out.println(normalMsg);
+        System.out.println("content=" + normalMsg.getContent() + "**ToUserName=" + normalMsg.getToUserName() + "**FromUserName=" + normalMsg.getFromUserName()
+                + "**CreateTime=" + normalMsg.getCreateTime() + "**MsgType=" + normalMsg.getMsgType()+"**MsgId="+normalMsg.getMsgId());
         return normalMsg;
     }
 
@@ -90,7 +85,8 @@ public class WechatUtil {
     public static String buildReturnXML(RecNormalMsg normalMsg, String message) {
         StringBuffer sb = new StringBuffer();
         sb.append("<xml>");
-        WechatUtil.buildCommonXML(normalMsg.getFromUserName(), normalMsg.getToUserName(), normalMsg.getMsgType());
+        sb.append(
+                WechatUtil.buildCommonXML(normalMsg.getFromUserName(), normalMsg.getToUserName(), normalMsg.getMsgType()));
         sb.append("<Content><![CDATA[").append(message).append("]]></Content>");
         sb.append("</xml>");
         return sb.toString();
@@ -167,19 +163,17 @@ public class WechatUtil {
      * {"access_token":"ACCESS_TOKEN","expires_in":7200}
      * {"errcode":40013,"errmsg":"invalid appid"}
      */
-    public static JSONObject getAccessToken() {
+    public static String getAccessToken() {
         String url = "https://api.weixin.qq.com/cgi-bin/token?";
         String param = "grant_type='" + grant_type + "'&appid='" + appid + "'&secret='" + secret + "'";
         CloseableHttpResponse response = null;
         String access_token = "";
-        JSONObject object = null;
         try {
             //发送HTTPGET请求
             HttpGet httpGet = new HttpGet(url + param);
             response = HttpClients.createDefault().execute(httpGet);
             //获取返回值
             access_token = EntityUtils.toString(response.getEntity());
-            object = JSON.parseObject(access_token);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -191,6 +185,6 @@ public class WechatUtil {
                 e.printStackTrace();
             }
         }
-        return object;
+        return access_token;
     }
 }
