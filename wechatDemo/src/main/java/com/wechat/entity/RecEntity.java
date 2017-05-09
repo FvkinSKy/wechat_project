@@ -6,15 +6,15 @@ package com.wechat.entity;
  */
 public class RecEntity {
     //开发者微信号
-    public String ToUserName;
+    private String ToUserName;
     //发送方帐号（一个OpenID）
-    public String FromUserName;
+    private String FromUserName;
     //消息创建时间
-    public String CreateTime;
+    private String CreateTime;
     //text
-    public String MsgType;
+    private String MsgType;
     //消息id
-    public String MsgId;
+    private String MsgId;
 
 
     public String getToUserName() {

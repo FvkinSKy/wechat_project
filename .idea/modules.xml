@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/wechat/wechat.iml" filepath="$PROJECT_DIR$/wechat/wechat.iml" />
       <module fileurl="file://$PROJECT_DIR$/wechatDemo/wechatDemo.iml" filepath="$PROJECT_DIR$/wechatDemo/wechatDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/wechatDemo02/wechatDemo02.iml" filepath="$PROJECT_DIR$/wechatDemo02/wechatDemo02.iml" />
     </modules>

@@ -1,6 +1,8 @@
 package com.wechat.servlet;
 
+import com.wechat.autotask.AutoTaskManager;
 import com.wechat.controller.WechatController;
+import com.wechat.util.WechatUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,10 +15,56 @@ import java.io.*;
  * Created by a07 on 2017/5/7.
  * 处理微信服务器消息（POST）
  */
-@WebServlet(urlPatterns = {"/io.do"})
+@WebServlet(urlPatterns = {"/io.do"}, loadOnStartup = 1)
 public class WechatIoServlet extends HttpServlet {
+    //令牌
+    public static String myToken = "111";
+
+    /**
+     * 验证微信服务器发送的数据
+     * get请求参数说明:
+     * signature     微信加密签名，signature结合了开发者填写的token参数和请求中的timestamp参数、nonce参数。
+     * timestamp    时间戳
+     * nonce     	随机数
+     * echostr  随机字符串
+     * 原样返回echostr完成验证
+     *
+     * @param req
+     * @param res
+     * @throws ServletException
+     * @throws IOException
+     */
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        //设置编码格式
+        req.setCharacterEncoding("UTF-8");
+        res.setCharacterEncoding("UTF-8");
+        try {
+            //获取请求参数
+            String signature = req.getParameter("signature");
+            String timestamp = req.getParameter("timestamp");
+            String nonce = req.getParameter("nonce");
+            String echostr = req.getParameter("echostr");
+
+            System.out.println(req.getParameterMap());
+            //校验
+            boolean result = WechatUtil.checkConnection(signature, myToken, timestamp, nonce);
+            if (result) {
+                System.out.println("返回数据" + echostr);
+                //验证成功，返回echostr
+                OutputStream os = res.getOutputStream();
+                os.write(echostr.getBytes("UTF-8"));
+                os.flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        //接入验证
+        doGet(req, res);
         //设置编码格式
         req.setCharacterEncoding("UTF-8");
         res.setCharacterEncoding("UTF-8");
@@ -46,5 +94,12 @@ public class WechatIoServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void init() throws ServletException {
+        System.out.println("初始化自动任务");
+        //初始化启用自动任务
+        AutoTaskManager.start();
     }
 }
