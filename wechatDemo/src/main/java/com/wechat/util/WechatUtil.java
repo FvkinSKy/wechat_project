@@ -1,7 +1,6 @@
 package com.wechat.util;
 
 import com.wechat.entity.RecNormalMsg;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
@@ -11,7 +10,6 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,13 +21,13 @@ import java.util.*;
  */
 public class WechatUtil {
 
-    public static String grant_type = "";//获取access_token填写client_credential
+    private static String grant_type = "client_credential";//获取access_token
 
-    public static String appid = "";//第三方用户唯一凭证
+    private static String appid = "wx1d6af81819d42b41";//第三方用户唯一凭证
 
-    public static String secret = "";// 第三方用户唯一凭证密钥，即appsecret
+    private static String secret = "54b7f3bd903cfcb539ee0a672a98075f";// 第三方用户唯一凭证密钥，即appsecret
 
-    public static Map<String, String> entityMap = new HashMap<String, String>();
+    private static Map<String, String> entityMap = new HashMap<String, String>();
 
     static {
         entityMap.put("RecNormalMsg", "com.wechat.entity.RecNormalMsg");
@@ -64,7 +62,7 @@ public class WechatUtil {
             throw new RuntimeException("xml转RecNormalMsg对象失败》》" + e.getMessage());
         }
         System.out.println("content=" + normalMsg.getContent() + "**ToUserName=" + normalMsg.getToUserName() + "**FromUserName=" + normalMsg.getFromUserName()
-                + "**CreateTime=" + normalMsg.getCreateTime() + "**MsgType=" + normalMsg.getMsgType()+"**MsgId="+normalMsg.getMsgId());
+                + "**CreateTime=" + normalMsg.getCreateTime() + "**MsgType=" + normalMsg.getMsgType() + "**MsgId=" + normalMsg.getMsgId());
         return normalMsg;
     }
 
@@ -116,24 +114,18 @@ public class WechatUtil {
      * @return
      */
     public static boolean checkConnection(String signature, String token, String timestamp, String nonce) {
+        String[] code = new String[]{token, timestamp, nonce};
         //字典序排序
-        List<String> list = new ArrayList<String>();
-        list.add(token);
-        list.add(timestamp);
-        list.add(nonce);
-        Collections.sort(list);
-        String result = "";
-        for (int i = 0; i < list.size(); i++) {
-            result += list.get(i);
+        Arrays.sort(code);
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < code.length; i++) {
+            sb.append(code[i]);
         }
-        //加密
-        result = WechatUtil.encipherBySHA(result);
-        if (result.equals(signature)) {
-            //标识该请求来源于微信
+        String result = WechatUtil.encipherBySHA(sb.toString());
+        if (result.equals(signature.toUpperCase())) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -143,17 +135,50 @@ public class WechatUtil {
      * @return 加密后数据
      */
     public static String encipherBySHA(String code) {
+        String bysha = "";
         try {
-            byte[] b = code.getBytes("UTF-8");
-            MessageDigest sha = MessageDigest.getInstance("SHA");
+            byte[] b = code.getBytes();
+            MessageDigest sha = MessageDigest.getInstance("SHA-1");
             byte[] digest = sha.digest(b);
-            return DigestUtils.sha1Hex(digest);
+            bysha = byteToStr(digest);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         }
-        return "";
+        return bysha;
+    }
+
+    /**
+     * 将字节数组转换为十六进制字符串
+     *
+     * @param byteArray
+     * @return
+     */
+    private static String byteToStr(byte[] byteArray) {
+        String strDigest = "";
+        for (int i = 0; i < byteArray.length; i++) {
+            strDigest += byteToHexStr(byteArray[i]);
+        }
+        return strDigest;
+    }
+
+    /**
+     * 将字节转换为十六进制字符串
+     *
+     * @param mByte
+     * @return
+     */
+    private static String byteToHexStr(byte mByte) {
+        char[] Digit = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        char[] tempArr = new char[2];
+        tempArr[0] = Digit[(mByte >>> 4) & 0X0F];
+        tempArr[1] = Digit[mByte & 0X0F];
+        String s = new String(tempArr);
+        return s;
+    }
+
+    public static void main(String[] args) {
+        String re = encipherBySHA("zrwechat001");
+        System.out.println(re);
     }
 
     /**
@@ -165,7 +190,7 @@ public class WechatUtil {
      */
     public static String getAccessToken() {
         String url = "https://api.weixin.qq.com/cgi-bin/token?";
-        String param = "grant_type='" + grant_type + "'&appid='" + appid + "'&secret='" + secret + "'";
+        String param = "grant_type=" + grant_type + "&appid=" + appid + "&secret=" + secret + "";
         CloseableHttpResponse response = null;
         String access_token = "";
         try {

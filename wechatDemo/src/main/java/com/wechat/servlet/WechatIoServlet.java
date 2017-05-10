@@ -18,7 +18,7 @@ import java.io.*;
 @WebServlet(urlPatterns = {"/io.do"}, loadOnStartup = 1)
 public class WechatIoServlet extends HttpServlet {
     //令牌
-    public static String myToken = "111";
+    public static String myToken = "zrwechat001";
 
     /**
      * 验证微信服务器发送的数据
@@ -63,8 +63,6 @@ public class WechatIoServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        //接入验证
-        doGet(req, res);
         //设置编码格式
         req.setCharacterEncoding("UTF-8");
         res.setCharacterEncoding("UTF-8");

@@ -1,8 +1,8 @@
 package com.wechat.autotask;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wechat.entity.AccessTokenEntity;
+import com.wechat.util.MenuUtil;
 import com.wechat.util.WechatUtil;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -13,6 +13,8 @@ import org.quartz.JobExecutionException;
  * 自动任务类
  */
 public class WechatAutoTask implements Job {
+
+    public static AccessTokenEntity entity = AccessTokenEntity.getInstance();
 
     private static Boolean flag = false;
 
@@ -34,8 +36,12 @@ public class WechatAutoTask implements Job {
             JSONObject object = JSONObject.parseObject(accessToken);
             if (object.containsKey("access_token")) {
                 //保存到对象中
-                String jsonString = JSON.toJSONString(accessToken);
-                AccessTokenEntity entity = JSON.parseObject(jsonString, AccessTokenEntity.class);
+                entity = JSONObject.parseObject(object.toJSONString(), AccessTokenEntity.class);
+                //调用接口创建菜单
+                boolean result = MenuUtil.buildMenu(MenuUtil.buildButton(), entity);
+                if (!result) {//失败则先删除菜单，等下一次自动任务再创建
+                    MenuUtil.delMenu(entity);
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());

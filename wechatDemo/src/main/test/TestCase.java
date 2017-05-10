@@ -1,4 +1,5 @@
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.wechat.entity.AccessTokenEntity;
 import com.wechat.entity.RecNormalMsg;
 import com.wechat.util.WechatUtil;
@@ -21,6 +22,13 @@ import java.net.URLEncoder;
  * Created by a07 on 2017/5/7.
  */
 public class TestCase {
+    public static AccessTokenEntity entity = AccessTokenEntity.getInstance();
+    private static String grant_type = "client_credential";//获取access_token
+
+    private static String appid = "wx1d6af81819d42b41";//第三方用户唯一凭证
+
+    private static String secret = "54b7f3bd903cfcb539ee0a672a98075f";// 第三方用户唯一凭证密钥，即appsecret
+
     /**
      * 模拟微信服务器post请求
      */
@@ -36,7 +44,7 @@ public class TestCase {
                 " <Content>" + encode + "</Content>\n" +
                 " <MsgId>1234567890123456</MsgId>\n" +
                 " </xml>";
-        HttpPost post = new HttpPost("http://localhost:9090/wechatDemo/io.do");
+        HttpPost post = new HttpPost("http://123.207.15.204/wechatDemo/io.do");
         try {
             post.setEntity(new StringEntity(send));
             HttpResponse response = HttpClients.createDefault().execute(post);
@@ -100,9 +108,9 @@ public class TestCase {
 
     @Test
     public void test4() {
-        String check = WechatUtil.encipherBySHA("111222333");
+        String check = WechatUtil.encipherBySHA("zrwechat001222333");
         System.out.println(check);
-        boolean result = WechatUtil.checkConnection(check, "111", "222", "333");
+        boolean result = WechatUtil.checkConnection(check, "zrwechat001", "222", "333");
         System.out.println(result);
     }
 
@@ -151,5 +159,47 @@ public class TestCase {
 //                " <MsgId>1234567890123456</MsgId>\n" +
 //                " </xml>";
 //        WechatUtil.parseXMLtoEntity(send);
+    }
+
+    @Test
+    public void test8() {
+        String url = "https://api.weixin.qq.com/cgi-bin/token?";
+        String param = "grant_type=" + grant_type + "&appid=" + appid + "&secret=" + secret + "";
+        HttpGet httpGet = new HttpGet(url + param);
+        try {
+            CloseableHttpResponse response = HttpClients.createDefault().execute(httpGet);
+            System.out.println(EntityUtils.toString(response.getEntity()));
+            JSONObject object = JSONObject.parseObject(EntityUtils.toString(response.getEntity()));
+//            if (object.containsKey("access_token")) {
+//                //保存到对象中
+//                String jsonString = JSON.toJSONString(EntityUtils.toString(response.getEntity()));
+////                AccessTokenEntity entity = JSON.parseObject(jsonString, AccessTokenEntity.class);
+////                System.out.println(entity);
+//            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test9() {
+        String a = "{\"access_token\":\"NG2HlMIQIZIplhoNGCmv_yU7zu5g59ZnZyyH6_s3311W636oXsvT-WtGEJARvsc51AVeFhV89fj5M1DpqAlkD645IHwx7CSgzyK1g7bs2ltkp2IbMHX6UGDlzofIkUo5MFJcAAABUY\",\"expires_in\":7200}\n";
+//        JSONObject object = JSONObject.parseObject(a);
+        JSONObject object = new JSONObject();
+        object.put("access_token", "NG2HlMIQIZIplhoNGCmv_yU7zu5g59ZnZyyH6_s3311W636oXsvT-WtGEJARvsc51AVeFhV89fj5M1DpqAlkD645IHwx7CSgzyK1g7bs2ltkp2IbMHX6UGDlzofIkUo5MFJcAAABUY");
+        object.put("expires_in", "7200");
+        if (object.containsKey("access_token")) {
+            //保存到对象中
+            String jsonString = JSON.toJSONString(a);
+            System.out.println(jsonString);
+            entity = JSONObject.parseObject(object.toJSONString(), AccessTokenEntity.class);
+//            TestPOJO entity = JSON.parseObject(jsonString, TestPOJO.class);
+            System.out.println(entity);
+        }
+    }
+
+    @Test
+    public void test10() {
+//        MenuUtil.buildMenu(MenuUtil.createMenuJson());
     }
 }
