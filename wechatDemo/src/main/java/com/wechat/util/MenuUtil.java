@@ -1,7 +1,9 @@
 package com.wechat.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.wechat.button.MainButton;
 import com.wechat.entity.AccessTokenEntity;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,14 +22,12 @@ import java.io.IOException;
  */
 public class MenuUtil {
 
-    private static AccessTokenEntity entity = AccessTokenEntity.getInstance();
-
     /**
      * 创建自定义菜单
      *
      * @return
      */
-    public static boolean buildMenu(String menu) {
+    public static boolean buildMenu(String menu, AccessTokenEntity entity) {
         //获取access_token
         String access_token = entity.getAccess_token();
         //发送POST请求
@@ -39,8 +39,8 @@ public class MenuUtil {
             httpPost.setEntity(new StringEntity(menu));
             //获取响应
             CloseableHttpResponse response = HttpClients.createDefault().execute(httpPost);
-            HttpEntity entity = response.getEntity();
-            String result = EntityUtils.toString(entity);
+            HttpEntity httpEntityentity = response.getEntity();
+            String result = EntityUtils.toString(httpEntityentity);
             JSONObject jsonObject = JSON.parseObject(result);
             if (String.valueOf(jsonObject.get("errcode")).equals("0")) {
                 return true;
@@ -90,7 +90,7 @@ public class MenuUtil {
      *
      * @return
      */
-    public static boolean delMenu() {
+    public static boolean delMenu(AccessTokenEntity entity) {
         String url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=" + entity.getAccess_token();
         HttpGet httpGet = new HttpGet(url);
         try {
@@ -106,5 +106,36 @@ public class MenuUtil {
             throw new RuntimeException("删除自定义菜单失败!!!" + e.getMessage());
         }
         return false;
+    }
+
+    /**
+     * 使用类创建菜单
+     *
+     * @return
+     */
+    public static String buildButton() {
+        MainButton mainButton = new MainButton();
+        mainButton.setName("今日比赛");
+        mainButton.setType("click");
+        mainButton.setKey("M1_TODAY_MATCH");
+
+        MainButton mainButton2 = new MainButton();
+        mainButton2.setName("MMR查询");
+        mainButton2.setType("view");
+        mainButton2.setUrl("https://www.baidu.com/");
+
+        String main01 = JSONObject.toJSONString(mainButton);
+        String main02 = JSONObject.toJSONString(mainButton2);
+        JSONArray array = new JSONArray();
+        array.add(main01);
+        array.add(main02);
+        JSONObject object = new JSONObject();
+        object.put("button", array);
+        return object.toJSONString();
+    }
+
+    public static void main(String[] args) {
+        String a = buildButton();
+        System.out.println(a);
     }
 }

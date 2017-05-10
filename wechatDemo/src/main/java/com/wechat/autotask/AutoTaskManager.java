@@ -42,7 +42,7 @@ public class AutoTaskManager {
     public static void start() {
         try {
             //1小时执行一次，无限重复
-            addJob("weChatTask", "trigger01", WechatAutoTask.class, 1);
+            addJob("weChatTask", "trigger01", WechatAutoTask.class, 2);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("自动任务启动失败！！");
