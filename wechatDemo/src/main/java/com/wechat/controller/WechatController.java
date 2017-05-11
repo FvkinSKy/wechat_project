@@ -74,10 +74,7 @@ public class WechatController {
      * @return
      */
     private static String getRobot(String msg) {
-        if (msg.indexOf(" ") > 0) {
-            msg = msg.replace(" ", ",");
-        }
-        String url = "http://www.tuling123.com/openapi/api?key=a4500591896d4848a709cd5ab85dacf2&info=" + msg;
+        String url = "http://www.tuling123.com/openapi/api?key=a4500591896d4848a709cd5ab85dacf2&info=" + msg.trim();
         HttpGet httpGet = new HttpGet(url);
         CloseableHttpResponse response = null;
         String revert = "";

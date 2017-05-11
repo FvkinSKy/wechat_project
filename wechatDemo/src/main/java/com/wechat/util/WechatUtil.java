@@ -1,8 +1,6 @@
 package com.wechat.util;
 
 import com.thoughtworks.xstream.XStream;
-import com.wechat.receiveEntity.RecNormalMsg;
-import com.wechat.receiveEntity.RecPicture;
 import com.wechat.revertEntity.RevImage;
 import com.wechat.revertEntity.RevMessage;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,7 +12,6 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -38,47 +35,6 @@ public class WechatUtil {
     static {
         entityMap.put("RecNormalMsg", "com.wechat.receiveEntity.RecNormalMsg");
         entityMap.put("RecPicture", "com.wechat.receiveEntity.RecPicture");
-    }
-
-    /**
-     * 解析XML为对象
-     *
-     * @param xml 微信服务器xml数据
-     * @return RecNormalMsg对象
-     */
-    public static Object parseXMLtoEntity(String xml) {
-        String className = "";
-        //判断消息类型
-        if (xml.indexOf("text") > 0) {//文本消息
-            className = entityMap.get("RecNormalMsg");
-        }
-        if (xml.indexOf("image") > 0) {
-            className = entityMap.get("RecPicture");
-        }
-        RecNormalMsg normalMsg = null;
-        try {
-            //反射创建对象
-            Class<?> c = Class.forName(className);
-            normalMsg = (RecNormalMsg) c.newInstance();
-            //string 转xml 对象
-            Document doc = DocumentHelper.parseText(xml);
-            //获取根节点
-            Element root = doc.getRootElement();
-            //遍历
-            for (Iterator<?> it = root.elementIterator(); it.hasNext(); ) {
-                Element element = (Element) it.next();
-                //获取set方法
-                Method method = c.getMethod("set" + element.getName(), String.class);
-                //调用set方法
-                method.invoke(normalMsg, element.getText());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("xml转RecNormalMsg对象失败》》" + e.getMessage());
-        }
-        System.out.println("content=" + normalMsg.getContent() + "**ToUserName=" + normalMsg.getToUserName() + "**FromUserName=" + normalMsg.getFromUserName()
-                + "**CreateTime=" + normalMsg.getCreateTime() + "**MsgType=" + normalMsg.getMsgType() + "**MsgId=" + normalMsg.getMsgId());
-        return normalMsg;
     }
 
     /**
@@ -120,88 +76,6 @@ public class WechatUtil {
         return xStream.toXML(revImage);
     }
 
-    /**
-     * 图片消息类赋值
-     *
-     * @param map
-     * @return
-     */
-    public static RecPicture parseMapToPicEntity(Map<String, String> map) {
-        RecPicture recNormalMsg = null;
-        try {
-            Class<?> c = Class.forName(entityMap.get("RecPicture"));
-            recNormalMsg = (RecPicture) c.newInstance();
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                System.out.println("key=" + entry.getKey() + " : " + "value=" + entry.getValue());
-                Method method = c.getMethod("set" + entry.getKey(), String.class);
-                method.invoke(recNormalMsg, entry.getValue());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return recNormalMsg;
-    }
-
-    /**
-     * 文字消息类赋值
-     *
-     * @param map
-     * @return
-     */
-    public static RecNormalMsg parseMapToMsgEntity(Map<String, String> map) {
-        RecNormalMsg recNormalMsg = null;
-        try {
-            Class<?> c = Class.forName(entityMap.get("RecNormalMsg"));
-            recNormalMsg = (RecNormalMsg) c.newInstance();
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                System.out.println("key=" + entry.getKey() + " : " + "value=" + entry.getValue());
-                Method method = c.getMethod("set" + entry.getKey(), String.class);
-                method.invoke(recNormalMsg, entry.getValue());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return recNormalMsg;
-    }
-
-    /**
-     * 封装返回微信服务器的文字消息xml数据
-     * <xml>
-     * <ToUserName><![CDATA[toUser]]></ToUserName>
-     * <FromUserName><![CDATA[fromUser]]></FromUserName>
-     * <CreateTime>12345678</CreateTime>
-     * <MsgType><![CDATA[text]]></MsgType>
-     * <Content><![CDATA[你好]]></Content>
-     * </xml>
-     *
-     * @param normalMsg
-     * @param message
-     * @return
-     */
-    public static String buildReturnXML(RecNormalMsg normalMsg, String message) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<xml>");
-        sb.append(
-                WechatUtil.buildCommonXML(normalMsg.getFromUserName(), normalMsg.getToUserName(), normalMsg.getMsgType()));
-        sb.append("<Content><![CDATA[").append(message).append("]]></Content>");
-        sb.append("</xml>");
-        return sb.toString();
-    }
-
-
-    /**
-     * xml中的共有元素
-     *
-     * @return
-     */
-    public static String buildCommonXML(String toUserName, String fromUserName, String msgType) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<ToUserName><![CDATA[").append(toUserName).append("]]></ToUserName>")
-                .append("<FromUserName><![CDATA[").append(fromUserName).append("]]></FromUserName>")
-                .append("<CreateTime>").append(new Date().getTime()).append("</CreateTime>")
-                .append("<MsgType><![CDATA[").append(msgType).append("]]></MsgType>");
-        return sb.toString();
-    }
 
     /**
      * 校验微信服务器连接
