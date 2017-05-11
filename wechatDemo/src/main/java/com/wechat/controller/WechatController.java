@@ -2,7 +2,8 @@ package com.wechat.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.wechat.entity.RecNormalMsg;
+import com.wechat.revertEntity.RevImage;
+import com.wechat.revertEntity.RevMessage;
 import com.wechat.util.WechatUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -11,21 +12,59 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by a07 on 2017/5/7.
  * 流程控制类
  */
 public class WechatController {
+    //文本消息
+    private static String text = "text";
+    //图片消息
+    private static String image = "image";
+    //地理位置消息
+    private static String location = "location";
+
+    //回复文字消息类
+    private static RevMessage revMessage = new RevMessage();
+    //回复图片消息类
+    private static RevImage revImage = new RevImage();
+
+
     /**
      * 获取微信端XML后返回处理后的XML
      *
-     * @param recxml
+     * @param recxml 微信端发送的XML
      * @return
      */
     public static String flowControl(String recxml) {
-        RecNormalMsg normalMsg = WechatUtil.parseXMLtoEntity(recxml);
-        return WechatUtil.buildReturnXML(normalMsg, getRobot(normalMsg.getContent()));
+        Map<String, String> map = WechatUtil.parseXMLtoMap(recxml);
+        String fromUserName = map.get("FromUserName");
+        String toUserName = map.get("ToUserName");
+        String MsgType = map.get("MsgType");
+        String Content = map.get("Content");
+
+        String createTime = String.valueOf(new Date().getTime());//创建时间
+        if (MsgType.equals(text)) {//回复文字消息
+            revMessage.setToUserName(fromUserName);
+            revMessage.setFromUserName(toUserName);
+            revMessage.setCreateTime(createTime);
+            revMessage.setMsgType(MsgType);
+            revMessage.setContent(getRobot(Content));//调用图灵机器人接口
+            return WechatUtil.parseMsgEntityToXml(revMessage);
+        }
+        if (MsgType.equals(image)) {//回复图片消息
+            revImage.setToUserName(fromUserName);
+            revImage.setFromUserName(toUserName);
+            revImage.setCreateTime(createTime);
+            revImage.setMsgType(MsgType);
+            //TODO
+            revImage.setMediaId("");//暂为空
+            return WechatUtil.parsePicEntityToXml(revImage);
+        }
+        return "";
     }
 
     /**

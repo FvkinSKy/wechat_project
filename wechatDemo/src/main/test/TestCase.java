@@ -1,8 +1,9 @@
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.wechat.entity.AccessTokenEntity;
-import com.wechat.entity.RecNormalMsg;
+import com.wechat.receiveEntity.AccessTokenEntity;
+import com.wechat.receiveEntity.RecNormalMsg;
 import com.wechat.util.WechatUtil;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -67,7 +68,7 @@ public class TestCase {
     public void test2() {
         RecNormalMsg normalMsg = null;
         try {
-            Class<?> c = Class.forName("com.wechat.entity.RecNormalMsg");
+            Class<?> c = Class.forName("com.wechat.receiveEntity.RecNormalMsg");
             normalMsg = (RecNormalMsg) c.newInstance();
 //            Field[] f = c.getDeclaredFields();
             Field[] f = c.getFields();
@@ -88,7 +89,7 @@ public class TestCase {
     public void test3() {
         RecNormalMsg normalMsg = null;
         try {
-            Class<?> c = Class.forName("com.wechat.entity.RecNormalMsg");
+            Class<?> c = Class.forName("com.wechat.receiveEntity.RecNormalMsg");
             normalMsg = (RecNormalMsg) c.newInstance();
             Field field[] = c.getDeclaredFields();
             Field.setAccessible(field, true);
@@ -139,13 +140,8 @@ public class TestCase {
     @Test
     public void test7() throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchFieldException {
         RecNormalMsg normalMsg = null;
-        Class<?> c = Class.forName("com.wechat.entity.RecNormalMsg");
-        normalMsg = (RecNormalMsg) c.newInstance();
-        RecNormalMsg.class.getDeclaredField("Content").setAccessible(true);
-        Field fields[] = c.getFields();
-        for (int i = 0; i < fields.length; i++) {
-            System.out.println(fields[i].getName());
-        }
+        Class<?> c = Class.forName("com.wechat.receiveEntity.RecNormalMsg");
+
 //        Method method[] = c.getMethods();
 //        for (int i=0;i<method.length;i++){
 //            System.out.println(method[i].getName());
@@ -173,8 +169,8 @@ public class TestCase {
 //            if (object.containsKey("access_token")) {
 //                //保存到对象中
 //                String jsonString = JSON.toJSONString(EntityUtils.toString(response.getEntity()));
-////                AccessTokenEntity entity = JSON.parseObject(jsonString, AccessTokenEntity.class);
-////                System.out.println(entity);
+////                AccessTokenEntity receiveEntity = JSON.parseObject(jsonString, AccessTokenEntity.class);
+////                System.out.println(receiveEntity);
 //            }
         } catch (IOException e) {
             e.printStackTrace();
@@ -193,13 +189,44 @@ public class TestCase {
             String jsonString = JSON.toJSONString(a);
             System.out.println(jsonString);
             entity = JSONObject.parseObject(object.toJSONString(), AccessTokenEntity.class);
-//            TestPOJO entity = JSON.parseObject(jsonString, TestPOJO.class);
+//            TestPOJO receiveEntity = JSON.parseObject(jsonString, TestPOJO.class);
             System.out.println(entity);
         }
     }
 
     @Test
     public void test10() {
-//        MenuUtil.buildMenu(MenuUtil.createMenuJson());
+        String url = "http://www.tuling123.com/openapi/api?key=a4500591896d4848a709cd5ab85dacf2&info=" + "周杰伦的图片";
+        HttpGet httpGet = new HttpGet(url);
+        CloseableHttpResponse response = null;
+        String revert = "";
+        try {
+            response = HttpClients.createDefault().execute(httpGet);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                HttpEntity entity = response.getEntity();
+                String result = EntityUtils.toString(entity);
+                JSONObject object = JSON.parseObject(result);
+                revert = String.valueOf(object.get("text"));
+                System.out.println(revert);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test11() {
+//        String send = "<xml>\n" +
+//                " <ToUserName><![CDATA[toUser]]></ToUserName>\n" +
+//                " <FromUserName><![CDATA[fromUser]]></FromUserName> \n" +
+//                " <CreateTime>1348831860</CreateTime>\n" +
+//                " <MsgType><![CDATA[location]]></MsgType>\n" +
+//                " <Content>测试</Content>\n" +
+//                " <MsgId>1234567890123456</MsgId>\n" +
+//                " </xml>";
+//        System.out.println(send.indexOf("text"));
+        System.out.println("com.wechat.receiveEntity.RecNormalMsg".substring(0, 19));
+
+
     }
 }
