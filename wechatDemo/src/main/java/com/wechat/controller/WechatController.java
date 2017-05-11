@@ -27,8 +27,9 @@ public class WechatController {
     //地理位置消息
     private static String location = "location";
 
+    //回复文字消息类
     private static RevMessage revMessage = new RevMessage();
-
+    //回复图片消息类
     private static RevImage revImage = new RevImage();
 
 
