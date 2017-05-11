@@ -1,4 +1,4 @@
-package com.wechat.entity;
+package com.wechat.receiveEntity;
 
 /**
  * Created by a07 on 2017/5/7.

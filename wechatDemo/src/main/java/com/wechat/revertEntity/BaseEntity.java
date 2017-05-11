@@ -1,21 +1,18 @@
-package com.wechat.entity;
+package com.wechat.revertEntity;
 
 /**
- * Created by a07 on 2017/5/7.
- * 普通消息类父类
+ * Created by rui on 2017/5/11.
+ * 消息回复类基类
  */
-public class RecEntity {
-    //开发者微信号
+public class BaseEntity {
+    //接收方帐号（收到的OpenID）
     private String ToUserName;
-    //发送方帐号（一个OpenID）
+    //开发者微信号
     private String FromUserName;
     //消息创建时间
     private String CreateTime;
-    //text
+    //消息类型
     private String MsgType;
-    //消息id
-    private String MsgId;
-
 
     public String getToUserName() {
         return ToUserName;
@@ -47,24 +44,5 @@ public class RecEntity {
 
     public void setMsgType(String msgType) {
         MsgType = msgType;
-    }
-
-    public String getMsgId() {
-        return MsgId;
-    }
-
-    public void setMsgId(String msgId) {
-        MsgId = msgId;
-    }
-
-    @Override
-    public String toString() {
-        return "RecEntity{" +
-                "ToUserName='" + ToUserName + '\'' +
-                ", FromUserName='" + FromUserName + '\'' +
-                ", CreateTime='" + CreateTime + '\'' +
-                ", MsgType='" + MsgType + '\'' +
-                ", MsgId='" + MsgId + '\'' +
-                '}';
     }
 }

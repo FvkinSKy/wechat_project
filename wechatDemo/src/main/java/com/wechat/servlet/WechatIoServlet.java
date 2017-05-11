@@ -80,7 +80,6 @@ public class WechatIoServlet extends HttpServlet {
             }
             //接收到的xml
             String content = sb.toString();
-            System.out.println("content" + content);
 
             //组装返回数据
             String result = WechatController.flowControl(content);

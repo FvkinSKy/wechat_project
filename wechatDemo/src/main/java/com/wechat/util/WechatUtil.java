@@ -1,6 +1,10 @@
 package com.wechat.util;
 
-import com.wechat.entity.RecNormalMsg;
+import com.thoughtworks.xstream.XStream;
+import com.wechat.receiveEntity.RecNormalMsg;
+import com.wechat.receiveEntity.RecPicture;
+import com.wechat.revertEntity.RevImage;
+import com.wechat.revertEntity.RevMessage;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
@@ -29,8 +33,11 @@ public class WechatUtil {
 
     private static Map<String, String> entityMap = new HashMap<String, String>();
 
+    public static XStream xStream = new XStream();
+
     static {
-        entityMap.put("RecNormalMsg", "com.wechat.entity.RecNormalMsg");
+        entityMap.put("RecNormalMsg", "com.wechat.receiveEntity.RecNormalMsg");
+        entityMap.put("RecPicture", "com.wechat.receiveEntity.RecPicture");
     }
 
     /**
@@ -39,11 +46,19 @@ public class WechatUtil {
      * @param xml 微信服务器xml数据
      * @return RecNormalMsg对象
      */
-    public static RecNormalMsg parseXMLtoEntity(String xml) {
+    public static Object parseXMLtoEntity(String xml) {
+        String className = "";
+        //判断消息类型
+        if (xml.indexOf("text") > 0) {//文本消息
+            className = entityMap.get("RecNormalMsg");
+        }
+        if (xml.indexOf("image") > 0) {
+            className = entityMap.get("RecPicture");
+        }
         RecNormalMsg normalMsg = null;
         try {
             //反射创建对象
-            Class<?> c = Class.forName(entityMap.get("RecNormalMsg"));
+            Class<?> c = Class.forName(className);
             normalMsg = (RecNormalMsg) c.newInstance();
             //string 转xml 对象
             Document doc = DocumentHelper.parseText(xml);
@@ -67,7 +82,90 @@ public class WechatUtil {
     }
 
     /**
-     * 封装返回微信服务器的xml数据
+     * XML转Map
+     *
+     * @param xml
+     * @return
+     */
+    public static Map<String, String> parseXMLtoMap(String xml) {
+        Map<String, String> map = new HashMap<>();
+        Document doc = DocumentHelper.createDocument();
+        Element element = doc.getRootElement();
+        for (Iterator<?> it = element.elementIterator(); it.hasNext(); ) {
+            Element e = (Element) it.next();
+            map.put(e.getName(), e.getText());
+        }
+        return map;
+    }
+
+
+    /**
+     * 文本消息类转为xml,用于回复
+     *
+     * @return
+     */
+    public static String parseMsgEntityToXml(RevMessage revMessage) {
+        xStream.alias("xml", revMessage.getClass());
+        return xStream.toXML(revMessage);
+    }
+
+    /**
+     * 图片消息转XML,用于回复
+     *
+     * @param revImage
+     * @return
+     */
+    public static String parsePicEntityToXml(RevImage revImage) {
+        xStream.alias("xml", revImage.getClass());
+        return xStream.toXML(revImage);
+    }
+
+    /**
+     * 图片消息类赋值
+     *
+     * @param map
+     * @return
+     */
+    public static RecPicture parseMapToPicEntity(Map<String, String> map) {
+        RecPicture recNormalMsg = null;
+        try {
+            Class<?> c = Class.forName(entityMap.get("RecPicture"));
+            recNormalMsg = (RecPicture) c.newInstance();
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                System.out.println("key=" + entry.getKey() + " : " + "value=" + entry.getValue());
+                Method method = c.getMethod("set" + entry.getKey(), String.class);
+                method.invoke(recNormalMsg, entry.getValue());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return recNormalMsg;
+    }
+
+    /**
+     * 文字消息类赋值
+     *
+     * @param map
+     * @return
+     */
+    public static RecNormalMsg parseMapToMsgEntity(Map<String, String> map) {
+        RecNormalMsg recNormalMsg = null;
+        try {
+            Class<?> c = Class.forName(entityMap.get("RecNormalMsg"));
+            recNormalMsg = (RecNormalMsg) c.newInstance();
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                System.out.println("key=" + entry.getKey() + " : " + "value=" + entry.getValue());
+                Method method = c.getMethod("set" + entry.getKey(), String.class);
+                method.invoke(recNormalMsg, entry.getValue());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return recNormalMsg;
+    }
+
+    /**
+     * 封装返回微信服务器的文字消息xml数据
      * <xml>
      * <ToUserName><![CDATA[toUser]]></ToUserName>
      * <FromUserName><![CDATA[fromUser]]></FromUserName>
@@ -89,6 +187,7 @@ public class WechatUtil {
         sb.append("</xml>");
         return sb.toString();
     }
+
 
     /**
      * xml中的共有元素
@@ -174,11 +273,6 @@ public class WechatUtil {
         tempArr[1] = Digit[mByte & 0X0F];
         String s = new String(tempArr);
         return s;
-    }
-
-    public static void main(String[] args) {
-        String re = encipherBySHA("zrwechat001");
-        System.out.println(re);
     }
 
     /**
