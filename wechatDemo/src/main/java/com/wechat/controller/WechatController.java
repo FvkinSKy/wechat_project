@@ -2,6 +2,7 @@ package com.wechat.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.wechat.revertEntity.Image;
 import com.wechat.revertEntity.RevImage;
 import com.wechat.revertEntity.RevMessage;
 import com.wechat.util.WechatUtil;
@@ -21,16 +22,16 @@ import java.util.Map;
  */
 public class WechatController {
     //文本消息
-    private static String text = "text";
+    private static String text_type = "text";
     //图片消息
-    private static String image = "image";
-    //地理位置消息
-    private static String location = "location";
+    private static String image_type = "image";
 
     //回复文字消息类
     private static RevMessage revMessage = new RevMessage();
     //回复图片消息类
     private static RevImage revImage = new RevImage();
+    //回复图片消息分类
+    private static Image image = new Image();
 
 
     /**
@@ -47,7 +48,7 @@ public class WechatController {
         String Content = map.get("Content");
 
         String createTime = String.valueOf(new Date().getTime());//创建时间
-        if (MsgType.equals(text)) {//回复文字消息
+        if (MsgType.equals(text_type)) {//回复文字消息
             revMessage.setToUserName(fromUserName);
             revMessage.setFromUserName(toUserName);
             revMessage.setCreateTime(createTime);
@@ -55,14 +56,15 @@ public class WechatController {
             revMessage.setContent(getRobot(Content));//调用图灵机器人接口
             return WechatUtil.parseMsgEntityToXml(revMessage);
         }
-        if (MsgType.equals(image)) {//回复图片消息
+        if (MsgType.equals(image_type)) {//回复图片消息
             revImage.setToUserName(fromUserName);
             revImage.setFromUserName(toUserName);
             revImage.setCreateTime(createTime);
             revImage.setMsgType(MsgType);
             //TODO
-            revImage.setMediaId("");//暂为空
-            return WechatUtil.parsePicEntityToXml(revImage);
+            image.setMediaId("");
+            revImage.setImage(image);
+            return WechatUtil.parsePicEntityToXml(revImage, image);
         }
         return "";
     }

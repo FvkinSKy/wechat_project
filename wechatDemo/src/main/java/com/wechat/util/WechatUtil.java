@@ -1,6 +1,7 @@
 package com.wechat.util;
 
 import com.thoughtworks.xstream.XStream;
+import com.wechat.revertEntity.Image;
 import com.wechat.revertEntity.RevImage;
 import com.wechat.revertEntity.RevMessage;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -71,8 +72,9 @@ public class WechatUtil {
      * @param revImage
      * @return
      */
-    public static String parsePicEntityToXml(RevImage revImage) {
+    public static String parsePicEntityToXml(RevImage revImage, Image image) {
         xStream.alias("xml", revImage.getClass());
+        xStream.alias("Image", image.getClass());
         return xStream.toXML(revImage);
     }
 

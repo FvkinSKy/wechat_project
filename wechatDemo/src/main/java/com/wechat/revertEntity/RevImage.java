@@ -5,14 +5,13 @@ package com.wechat.revertEntity;
  * 回复图片消息类
  */
 public class RevImage extends BaseEntity {
-    //通过素材管理中的接口上传多媒体文件，得到的id。
-    private String MediaId;
+    private Image Image;
 
-    public String getMediaId() {
-        return MediaId;
+    public com.wechat.revertEntity.Image getImage() {
+        return Image;
     }
 
-    public void setMediaId(String mediaId) {
-        MediaId = mediaId;
+    public void setImage(com.wechat.revertEntity.Image image) {
+        Image = image;
     }
 }

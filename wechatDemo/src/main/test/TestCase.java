@@ -1,9 +1,10 @@
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.thoughtworks.xstream.XStream;
 import com.wechat.receiveEntity.AccessTokenEntity;
 import com.wechat.receiveEntity.RecNormalMsg;
-import com.wechat.revertEntity.BaseEntity;
-import com.wechat.revertEntity.GenericType;
+import com.wechat.revertEntity.Image;
+import com.wechat.revertEntity.RevImage;
 import com.wechat.util.WechatUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.util.Date;
 
 /**
  * Created by a07 on 2017/5/7.
@@ -232,8 +234,21 @@ public class TestCase {
 
     }
 
+    @Test
     public void test12() {
-        GenericType<BaseEntity> g = new GenericType<>();
-        
+//        GenericType<Object> g = new GenericType<>();
+        Image image = new Image();
+        image.setMediaId("this is mediaid");
+        RevImage revImage = new RevImage();
+        revImage.setImage(image);
+        revImage.setFromUserName("zr");
+        revImage.setToUserName("wechat");
+        revImage.setCreateTime(String.valueOf(new Date().getTime()));
+        revImage.setMsgType("image");
+        XStream xStream = new XStream();
+        xStream.alias("xml", revImage.getClass());
+        xStream.alias("MediaId", image.getClass());
+        System.out.println(xStream.toXML(revImage));
+
     }
 }
