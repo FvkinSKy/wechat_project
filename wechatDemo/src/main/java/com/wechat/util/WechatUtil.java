@@ -76,6 +76,11 @@ public class WechatUtil {
         return xStream.toXML(revImage);
     }
 
+    public static String parseEntityToxml() {
+
+        return "";
+    }
+
 
     /**
      * 校验微信服务器连接

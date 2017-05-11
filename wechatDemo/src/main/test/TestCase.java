@@ -2,6 +2,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wechat.receiveEntity.AccessTokenEntity;
 import com.wechat.receiveEntity.RecNormalMsg;
+import com.wechat.revertEntity.BaseEntity;
+import com.wechat.revertEntity.GenericType;
 import com.wechat.util.WechatUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -228,5 +230,10 @@ public class TestCase {
         System.out.println("com.wechat.receiveEntity.RecNormalMsg".substring(0, 19));
 
 
+    }
+
+    public void test12() {
+        GenericType<BaseEntity> g = new GenericType<>();
+        
     }
 }
