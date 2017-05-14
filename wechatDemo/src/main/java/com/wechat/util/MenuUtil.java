@@ -110,6 +110,7 @@ public class MenuUtil {
         JSONArray array = new JSONArray();
         array.add(clickButton);
         array.add(viewButton);
+        array.add(mediaButton);
 
         JSONObject object = new JSONObject();
         object.put("button", array);
