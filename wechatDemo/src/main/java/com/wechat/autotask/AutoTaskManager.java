@@ -24,7 +24,7 @@ public class AutoTaskManager {
             JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, JOB_GROUP_NAME).build();
             //创建触发器
             Trigger trigger = TriggerBuilder.newTrigger().withIdentity(triggerName, TRIGER_GROUP_NAME).startNow().withSchedule(
-                    SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(hours).repeatForever()
+                    SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(hours).repeatForever()
             ).build();
             //添加job和trigger
             sch.scheduleJob(jobDetail, trigger);
@@ -42,7 +42,7 @@ public class AutoTaskManager {
     public static void start() {
         try {
             //2小时执行一次，无限重复
-            addJob("weChatTask", "trigger01", WechatAutoTask.class, 2);
+            addJob("weChatTask", "trigger01", WechatAutoTask.class, 1);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("自动任务启动失败！！");

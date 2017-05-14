@@ -3,10 +3,12 @@ package com.wechat.autotask;
 import com.alibaba.fastjson.JSONObject;
 import com.wechat.receiveEntity.AccessTokenEntity;
 import com.wechat.util.MenuUtil;
+import com.wechat.util.RedisConnUtil;
 import com.wechat.util.WechatUtil;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import redis.clients.jedis.Jedis;
 
 /**
  * Created by rui on 2017/5/9.
@@ -35,12 +37,22 @@ public class WechatAutoTask implements Job {
             String accessToken = WechatUtil.getAccessToken();
             JSONObject object = JSONObject.parseObject(accessToken);
             if (object.containsKey("access_token")) {
+                //保存到redis
+                Jedis jedis = RedisConnUtil.getConn();
+                jedis.set("access_token", object.getString("access_token"));
+                jedis.close();
                 //保存到对象中
                 entity = JSONObject.parseObject(object.toJSONString(), AccessTokenEntity.class);
-                //调用接口创建菜单
-                boolean result = MenuUtil.buildMenu(MenuUtil.createMenuJson(), entity);
-                if (!result) {//失败则先删除菜单，等下一次自动任务再创建
-                    MenuUtil.delMenu(entity);
+                System.out.println(entity);
+                //删除菜单
+                boolean result = MenuUtil.delMenu(entity);
+                //菜单会随着access_token失效而消失，需要在失效前创建
+                //创建菜单
+                boolean buildresult = MenuUtil.buildMenu(MenuUtil.buildButtonJson(), entity);
+                if (buildresult) {
+                    System.out.println("菜单创建成功");
+                }else {
+                    System.out.println("菜单创建失败");
                 }
             }
         } catch (Exception e) {

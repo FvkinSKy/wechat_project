@@ -3,8 +3,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.xstream.XStream;
 import com.wechat.receiveEntity.AccessTokenEntity;
 import com.wechat.receiveEntity.RecNormalMsg;
-import com.wechat.revertEntity.Image;
+import com.wechat.revertEntity.IncludeImage;
 import com.wechat.revertEntity.RevImage;
+import com.wechat.util.RedisConnUtil;
 import com.wechat.util.WechatUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,12 +17,14 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
+import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by a07 on 2017/5/7.
@@ -30,9 +33,9 @@ public class TestCase {
     public static AccessTokenEntity entity = AccessTokenEntity.getInstance();
     private static String grant_type = "client_credential";//获取access_token
 
-    private static String appid = "wx1d6af81819d42b41";//第三方用户唯一凭证
+    private static String appid = "wx440013db0de931d1";//第三方用户唯一凭证
 
-    private static String secret = "54b7f3bd903cfcb539ee0a672a98075f";// 第三方用户唯一凭证密钥，即appsecret
+    private static String secret = "ce57f62f00f58c1d9ad0f6610d168f14";// 第三方用户唯一凭证密钥，即appsecret
 
     /**
      * 模拟微信服务器post请求
@@ -237,18 +240,53 @@ public class TestCase {
     @Test
     public void test12() {
 //        GenericType<Object> g = new GenericType<>();
-        Image image = new Image();
-        image.setMediaId("this is mediaid");
+        IncludeImage includeImage = new IncludeImage();
+        includeImage.setMediaId("this is mediaid");
         RevImage revImage = new RevImage();
-        revImage.setImage(image);
+        revImage.setImage(includeImage);
         revImage.setFromUserName("zr");
         revImage.setToUserName("wechat");
         revImage.setCreateTime(String.valueOf(new Date().getTime()));
         revImage.setMsgType("image");
         XStream xStream = new XStream();
         xStream.alias("xml", revImage.getClass());
-        xStream.alias("MediaId", image.getClass());
+        xStream.alias("MediaId", includeImage.getClass());
         System.out.println(xStream.toXML(revImage));
 
     }
+
+    @Test
+    public void test13() {
+        String send = "<xml>\n" +
+                " <ToUserName><![CDATA[toUser]]></ToUserName>\n" +
+                " <FromUserName><![CDATA[fromUser]]></FromUserName> \n" +
+                " <CreateTime>1348831860</CreateTime>\n" +
+                " <MsgType><![CDATA[text]]></MsgType>\n" +
+                " <Content>双击666</Content>\n" +
+                " <MsgId>1234567890123456</MsgId>\n" +
+                " </xml>";
+        Map<String, String> map = WechatUtil.parseXMLtoMap(send);
+        System.out.println(map);
+    }
+
+    /**
+     * redis
+     */
+    @Test
+    public void test14() {
+        //设置连接
+        Jedis jedis = RedisConnUtil.getConn();
+        System.out.println(jedis);
+        jedis.set("bingo","双击666");
+        System.out.println(jedis.get("bingo"));
+    }
+
+    @Test
+    public void test15(){
+        Jedis jedis = RedisConnUtil.getConn();
+        System.out.println(jedis.get("bingo"));
+//        jedis.set("bingo","12345");
+        System.out.println(jedis.get("bingo"));
+    }
+
 }

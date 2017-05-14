@@ -1,7 +1,7 @@
 package com.wechat.util;
 
 import com.thoughtworks.xstream.XStream;
-import com.wechat.revertEntity.Image;
+import com.wechat.revertEntity.IncludeImage;
 import com.wechat.revertEntity.RevImage;
 import com.wechat.revertEntity.RevMessage;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -15,7 +15,10 @@ import org.dom4j.Element;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by a07 on 2017/5/7.
@@ -25,9 +28,10 @@ public class WechatUtil {
 
     private static String grant_type = "client_credential";//获取access_token
 
-    private static String appid = "wx1d6af81819d42b41";//第三方用户唯一凭证
+    private static String appid = "wx440013db0de931d1";//第三方用户唯一凭证 wx1d6af81819d42b41
 
-    private static String secret = "54b7f3bd903cfcb539ee0a672a98075f";// 第三方用户唯一凭证密钥，即appsecret
+    private static String secret = "ce57f62f00f58c1d9ad0f6610d168f14";// 第三方用户唯一凭证密钥54b7f3bd903cfcb539ee0a672a98075f
+
 
     private static Map<String, String> entityMap = new HashMap<String, String>();
 
@@ -46,11 +50,15 @@ public class WechatUtil {
      */
     public static Map<String, String> parseXMLtoMap(String xml) {
         Map<String, String> map = new HashMap<>();
-        Document doc = DocumentHelper.createDocument();
-        Element element = doc.getRootElement();
-        for (Iterator<?> it = element.elementIterator(); it.hasNext(); ) {
-            Element e = (Element) it.next();
-            map.put(e.getName(), e.getText());
+        try {
+            Document doc = DocumentHelper.parseText(xml);
+            Element element = doc.getRootElement();
+            for (Iterator<?> it = element.elementIterator(); it.hasNext(); ) {
+                Element e = (Element) it.next();
+                map.put(e.getName(), e.getText());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return map;
     }
@@ -72,9 +80,9 @@ public class WechatUtil {
      * @param revImage
      * @return
      */
-    public static String parsePicEntityToXml(RevImage revImage, Image image) {
+    public static String parsePicEntityToXml(RevImage revImage, IncludeImage includeImage) {
         xStream.alias("xml", revImage.getClass());
-        xStream.alias("Image", image.getClass());
+        xStream.alias("IncludeImage", includeImage.getClass());
         return xStream.toXML(revImage);
     }
 
@@ -187,4 +195,5 @@ public class WechatUtil {
         }
         return access_token;
     }
+
 }

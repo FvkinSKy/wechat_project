@@ -3,7 +3,8 @@ package com.wechat.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.wechat.button.MainButton;
+import com.wechat.button.ClickButton;
+import com.wechat.button.ViewButton;
 import com.wechat.receiveEntity.AccessTokenEntity;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,6 +15,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  * Created by rui on 2017/5/8.
@@ -36,7 +40,7 @@ public class MenuUtil {
             String url = " https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + access_token;
             HttpPost httpPost = new HttpPost(url);
             //参数
-            httpPost.setEntity(new StringEntity(menu));
+            httpPost.setEntity(new StringEntity(menu,"UTF-8"));
             //获取响应
             CloseableHttpResponse response = HttpClients.createDefault().execute(httpPost);
             HttpEntity httpEntityentity = response.getEntity();
@@ -54,46 +58,17 @@ public class MenuUtil {
     }
 
     /**
-     * 创建菜单JSON
-     *
-     * @return
-     */
-    public static String createMenuJson() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("{\n" +
-                "     \"button\":[\n" +
-                "     {\t\n" +
-                "          \"type\":\"click\",\n" +
-                "          \"name\":\"今日比赛\",\n" +
-                "          \"key\":\"V1001_TODAY_MATCH\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "           \"name\":\"菜单\",\n" +
-                "           \"sub_button\":[\n" +
-                "           {\t\n" +
-                "               \"type\":\"view\",\n" +
-                "               \"name\":\"搜索\",\n" +
-                "               \"url\":\"http://www.baidu.com/\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "               \"type\":\"click\",\n" +
-                "               \"name\":\"赞一下我们\",\n" +
-                "               \"key\":\"V1001_GOOD\"\n" +
-                "            }]\n" +
-                "       }]\n" +
-                " }");
-        return sb.toString();
-    }
-
-    /**
      * 删除自定义菜单
      *
      * @return
      */
     public static boolean delMenu(AccessTokenEntity entity) {
         String url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=" + entity.getAccess_token();
-        HttpGet httpGet = new HttpGet(url);
         try {
+            URL urlL = new URL(url);
+            //url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), null
+            URI uri=new URI(urlL.getProtocol(),urlL.getHost(),urlL.getPath(),urlL.getQuery(),null);
+            HttpGet httpGet = new HttpGet(url);
             CloseableHttpResponse response = HttpClients.createDefault().execute(httpGet);
             HttpEntity httpEntity = response.getEntity();
             String result = EntityUtils.toString(httpEntity);
@@ -104,38 +79,39 @@ public class MenuUtil {
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("删除自定义菜单失败!!!" + e.getMessage());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
         return false;
     }
 
     /**
-     * 使用类创建菜单
+     * 创建菜单JSON
      *
      * @return
      */
-    public static String buildButton() {
-        MainButton mainButton = new MainButton();
-        mainButton.setName("今日比赛");
-        mainButton.setType("click");
-        mainButton.setKey("M1_TODAY_MATCH");
+    public static String buildButtonJson() {
+        ClickButton clickButton = new ClickButton();
+        clickButton.setName("单击按钮");
+        clickButton.setType("click");
+        clickButton.setKey("image");
 
-        MainButton mainButton2 = new MainButton();
-        mainButton2.setName("MMR查询");
-        mainButton2.setType("view");
-        mainButton2.setUrl("https://www.baidu.com/");
+        ViewButton viewButton = new ViewButton();
+        viewButton.setName("跳转按钮");
+        viewButton.setType("view");
+        viewButton.setUrl("https://www.baidu.com/");
 
-        String main01 = JSONObject.toJSONString(mainButton);
-        String main02 = JSONObject.toJSONString(mainButton2);
         JSONArray array = new JSONArray();
-        array.add(main01);
-        array.add(main02);
+        array.add(clickButton);
+        array.add(viewButton);
+
         JSONObject object = new JSONObject();
         object.put("button", array);
         return object.toJSONString();
     }
 
     public static void main(String[] args) {
-        String a = buildButton();
-        System.out.println(a);
+        String json = buildButtonJson();
+        System.out.println(json);
     }
 }

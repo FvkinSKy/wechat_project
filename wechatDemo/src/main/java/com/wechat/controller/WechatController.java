@@ -2,7 +2,7 @@ package com.wechat.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.wechat.revertEntity.Image;
+import com.wechat.revertEntity.IncludeImage;
 import com.wechat.revertEntity.RevImage;
 import com.wechat.revertEntity.RevMessage;
 import com.wechat.util.WechatUtil;
@@ -31,7 +31,7 @@ public class WechatController {
     //回复图片消息类
     private static RevImage revImage = new RevImage();
     //回复图片消息分类
-    private static Image image = new Image();
+    private static IncludeImage includeImage = new IncludeImage();
 
 
     /**
@@ -62,9 +62,9 @@ public class WechatController {
             revImage.setCreateTime(createTime);
             revImage.setMsgType(MsgType);
             //TODO
-            image.setMediaId("");
-            revImage.setImage(image);
-            return WechatUtil.parsePicEntityToXml(revImage, image);
+            includeImage.setMediaId("");
+            revImage.setImage(includeImage);
+            return WechatUtil.parsePicEntityToXml(revImage, includeImage);
         }
         return "";
     }
@@ -92,5 +92,17 @@ public class WechatController {
             e.printStackTrace();
         }
         return revert;
+    }
+
+    public static void main(String[] args) {
+        String send = "<xml>\n" +
+                " <ToUserName><![CDATA[toUser]]></ToUserName>\n" +
+                " <FromUserName><![CDATA[fromUser]]></FromUserName> \n" +
+                " <CreateTime>1348831860</CreateTime>\n" +
+                " <MsgType><![CDATA[text]]></MsgType>\n" +
+                " <Content>双击666</Content>\n" +
+                " <MsgId>1234567890123456</MsgId>\n" +
+                " </xml>";
+        flowControl(send);
     }
 }

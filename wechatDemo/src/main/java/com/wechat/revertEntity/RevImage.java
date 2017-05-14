@@ -5,13 +5,13 @@ package com.wechat.revertEntity;
  * 回复图片消息类
  */
 public class RevImage extends BaseEntity {
-    private Image Image;
+    private IncludeImage Image;
 
-    public com.wechat.revertEntity.Image getImage() {
+    public IncludeImage getImage() {
         return Image;
     }
 
-    public void setImage(com.wechat.revertEntity.Image image) {
+    public void setImage(IncludeImage image) {
         Image = image;
     }
 }
