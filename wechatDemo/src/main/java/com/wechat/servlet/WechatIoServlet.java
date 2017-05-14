@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.Map;
 
 /**
  * Created by a07 on 2017/5/7.
@@ -18,7 +19,7 @@ import java.io.*;
 @WebServlet(urlPatterns = {"/io.do"}, loadOnStartup = 1)
 public class WechatIoServlet extends HttpServlet {
     //令牌
-    public static String myToken = "zrwechat001";
+    private static String myToken = "zrwechat001";
 
     /**
      * 验证微信服务器发送的数据
@@ -80,9 +81,17 @@ public class WechatIoServlet extends HttpServlet {
             }
             //接收到的xml
             String content = sb.toString();
+            //解析为map
+            Map<String, String> map = WechatUtil.parseXMLtoMap(content);
+            String type = String.valueOf(map.get("MsgType"));
+            String result = "";
+            //事件和消息分开处理
+            if (type.equals("event")) {//事件处理
 
-            //组装返回数据
-            String result = WechatController.flowControl(content);
+            } else {//消息处理
+                //组装消息返回数据
+                result = WechatController.flowControl(map);
+            }
             //返回xml到微信服务器
             OutputStream os = res.getOutputStream();
             os.write(result.getBytes("UTF-8"));

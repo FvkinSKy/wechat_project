@@ -35,13 +35,12 @@ public class WechatController {
 
 
     /**
-     * 获取微信端XML后返回处理后的XML
+     * （消息处理）获取微信端XML后返回处理后的XML
      *
-     * @param recxml 微信端发送的XML
+     * @param map 微信端发送的XML转map
      * @return
      */
-    public static String flowControl(String recxml) {
-        Map<String, String> map = WechatUtil.parseXMLtoMap(recxml);
+    public static String flowControl(Map<String, String> map) {
         String fromUserName = map.get("FromUserName");
         String toUserName = map.get("ToUserName");
         String MsgType = map.get("MsgType");
@@ -69,6 +68,18 @@ public class WechatController {
         return "";
     }
 
+
+    /**
+     * 事件处理
+     *
+     * @param map
+     * @return
+     */
+    public static String eventControl(Map<String, String> map) {
+
+        return "";
+    }
+
     /**
      * 调用图灵机器人接口实现自动回复
      *
@@ -92,17 +103,5 @@ public class WechatController {
             e.printStackTrace();
         }
         return revert;
-    }
-
-    public static void main(String[] args) {
-        String send = "<xml>\n" +
-                " <ToUserName><![CDATA[toUser]]></ToUserName>\n" +
-                " <FromUserName><![CDATA[fromUser]]></FromUserName> \n" +
-                " <CreateTime>1348831860</CreateTime>\n" +
-                " <MsgType><![CDATA[text]]></MsgType>\n" +
-                " <Content>双击666</Content>\n" +
-                " <MsgId>1234567890123456</MsgId>\n" +
-                " </xml>";
-        flowControl(send);
     }
 }

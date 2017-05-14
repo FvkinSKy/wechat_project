@@ -35,7 +35,7 @@ public class WechatUtil {
 
     private static Map<String, String> entityMap = new HashMap<String, String>();
 
-    public static XStream xStream = new XStream();
+    private static XStream xStream = new XStream();
 
     static {
         entityMap.put("RecNormalMsg", "com.wechat.receiveEntity.RecNormalMsg");
@@ -85,12 +85,6 @@ public class WechatUtil {
         xStream.alias("IncludeImage", includeImage.getClass());
         return xStream.toXML(revImage);
     }
-
-    public static String parseEntityToxml() {
-
-        return "";
-    }
-
 
     /**
      * 校验微信服务器连接

@@ -16,7 +16,7 @@ import redis.clients.jedis.Jedis;
  */
 public class WechatAutoTask implements Job {
 
-    public static AccessTokenEntity entity = AccessTokenEntity.getInstance();
+    private static AccessTokenEntity entity = AccessTokenEntity.getInstance();
 
     private static Boolean flag = false;
 
@@ -43,7 +43,6 @@ public class WechatAutoTask implements Job {
                 jedis.close();
                 //保存到对象中
                 entity = JSONObject.parseObject(object.toJSONString(), AccessTokenEntity.class);
-                System.out.println(entity);
                 //删除菜单
                 boolean result = MenuUtil.delMenu(entity);
                 //菜单会随着access_token失效而消失，需要在失效前创建
@@ -51,7 +50,7 @@ public class WechatAutoTask implements Job {
                 boolean buildresult = MenuUtil.buildMenu(MenuUtil.buildButtonJson(), entity);
                 if (buildresult) {
                     System.out.println("菜单创建成功");
-                }else {
+                } else {
                     System.out.println("菜单创建失败");
                 }
             }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wechat.button.ClickButton;
+import com.wechat.button.MediaButton;
 import com.wechat.button.ViewButton;
 import com.wechat.receiveEntity.AccessTokenEntity;
 import org.apache.http.HttpEntity;
@@ -37,10 +38,10 @@ public class MenuUtil {
         //发送POST请求
         try {
             //创建HTTPPOST
-            String url = " https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + access_token;
+            String url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + access_token;
             HttpPost httpPost = new HttpPost(url);
             //参数
-            httpPost.setEntity(new StringEntity(menu,"UTF-8"));
+            httpPost.setEntity(new StringEntity(menu, "UTF-8"));
             //获取响应
             CloseableHttpResponse response = HttpClients.createDefault().execute(httpPost);
             HttpEntity httpEntityentity = response.getEntity();
@@ -67,7 +68,7 @@ public class MenuUtil {
         try {
             URL urlL = new URL(url);
             //url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), null
-            URI uri=new URI(urlL.getProtocol(),urlL.getHost(),urlL.getPath(),urlL.getQuery(),null);
+            URI uri = new URI(urlL.getProtocol(), urlL.getHost(), urlL.getPath(), urlL.getQuery(), null);
             HttpGet httpGet = new HttpGet(url);
             CloseableHttpResponse response = HttpClients.createDefault().execute(httpGet);
             HttpEntity httpEntity = response.getEntity();
@@ -94,12 +95,17 @@ public class MenuUtil {
         ClickButton clickButton = new ClickButton();
         clickButton.setName("单击按钮");
         clickButton.setType("click");
-        clickButton.setKey("image");
+        clickButton.setKey("H5nCy9pZlaCSjLQ1sMg0LSDFXfUg3iNicKuSbDHBTuI");
 
         ViewButton viewButton = new ViewButton();
         viewButton.setName("跳转按钮");
         viewButton.setType("view");
         viewButton.setUrl("https://www.baidu.com/");
+
+        MediaButton mediaButton = new MediaButton();
+        mediaButton.setName("图文消息");
+        mediaButton.setType("media_id");
+        mediaButton.setMedia_id("H5nCy9pZlaCSjLQ1sMg0LfnNnJvw8hRmHa7lLy70XAM");
 
         JSONArray array = new JSONArray();
         array.add(clickButton);

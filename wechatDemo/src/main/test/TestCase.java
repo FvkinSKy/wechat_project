@@ -3,8 +3,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.xstream.XStream;
 import com.wechat.receiveEntity.AccessTokenEntity;
 import com.wechat.receiveEntity.RecNormalMsg;
+import com.wechat.revertEntity.Articles;
 import com.wechat.revertEntity.IncludeImage;
 import com.wechat.revertEntity.RevImage;
+import com.wechat.util.MaterialUtil;
+import com.wechat.util.MenuUtil;
 import com.wechat.util.RedisConnUtil;
 import com.wechat.util.WechatUtil;
 import org.apache.http.HttpEntity;
@@ -164,6 +167,9 @@ public class TestCase {
 //        WechatUtil.parseXMLtoEntity(send);
     }
 
+    /**
+     * 获取access_token
+     */
     @Test
     public void test8() {
         String url = "https://api.weixin.qq.com/cgi-bin/token?";
@@ -277,16 +283,57 @@ public class TestCase {
         //设置连接
         Jedis jedis = RedisConnUtil.getConn();
         System.out.println(jedis);
-        jedis.set("bingo","双击666");
+        jedis.set("bingo", "双击666");
         System.out.println(jedis.get("bingo"));
     }
 
     @Test
-    public void test15(){
+    public void test15() {
         Jedis jedis = RedisConnUtil.getConn();
         System.out.println(jedis.get("bingo"));
 //        jedis.set("bingo","12345");
         System.out.println(jedis.get("bingo"));
     }
 
+
+    @Test
+    public void test16() {
+        AccessTokenEntity entity = new AccessTokenEntity();
+        entity.setAccess_token("5KPRx8qUAx3e4nFyJrluN1w9HN5-kuXtB6Kja-dtCko3QROd03J20r2-vZYD-UvZclAHXd1AxGQR_r68W3T9mIzukhnxP_FDgMJ-x1DADUXEjvSv7HpV8cOjE2AgZ0BHEIDgABAAEZ");
+        entity.setExpires_in("7200");
+        boolean result = MenuUtil.buildMenu(MenuUtil.buildButtonJson(), entity);
+        System.out.println(result);
+    }
+
+
+    /**
+     * 永久素材上传测试
+     */
+    @Test
+    public void test17() {
+        Articles articles = new Articles();
+        articles.setTitle("图文消息测试");//标题
+        articles.setDigest("包含图片和文字");//摘要
+        articles.setAuthor("ZR");//作者
+        articles.setThumb_media_id("H5nCy9pZlaCSjLQ1sMg0LSDFXfUg3iNicKuSbDHBTuI");//封面图片素材id
+        articles.setShow_cover_pic("1");//是否显示封面
+        articles.setContent("这是图文消息测试！对于常用的素材，开发者可通过本接口上传到微信服务器，永久使用。新增的永久素材也可以在公众平台官网素材管理模块中查询管理。");//正文
+        articles.setContent_source_url("https://mp.weixin.qq.com/wiki");//原文地址
+        String jsonString = MaterialUtil.uploadArticles(articles);
+        System.out.println(jsonString);
+
+    }
+
+    /**
+     * 上传图片素材
+     */
+    @Test
+    public void test18() {
+        String accessToken = WechatUtil.getAccessToken();
+        JSONObject object = JSONObject.parseObject(accessToken);
+        String token = object.getString("access_token");
+        String url = "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=" + token + "&type=image";
+        HttpPost httpPost = new HttpPost(url);
+
+    }
 }
