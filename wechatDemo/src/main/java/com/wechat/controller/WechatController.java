@@ -76,7 +76,23 @@ public class WechatController {
      * @return
      */
     public static String eventControl(Map<String, String> map) {
-
+        System.out.println("进入事件处理");
+        String ToUserName = map.get("ToUserName");
+        String FromUserName = map.get("FromUserName");
+        String CreateTime = map.get("CreateTime");
+        String MsgType = map.get("MsgType");
+        String Event = map.get("Event");
+        String EventKey = map.get("EventKey");
+        if (EventKey.equals("Today_Weather")) {
+            //调用robot获取天气
+            String weather = getRobot("昆明天气");
+            revMessage.setFromUserName(ToUserName);
+            revMessage.setToUserName(FromUserName);
+            revMessage.setMsgType(text_type);
+            revMessage.setContent(weather);
+            revMessage.setCreateTime(String.valueOf(new Date().getTime()));
+            return WechatUtil.parseMsgEntityToXml(revMessage);
+        }
         return "";
     }
 

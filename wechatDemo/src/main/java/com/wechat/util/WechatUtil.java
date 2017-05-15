@@ -1,9 +1,12 @@
 package com.wechat.util;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.xstream.XStream;
 import com.wechat.revertEntity.IncludeImage;
 import com.wechat.revertEntity.RevImage;
 import com.wechat.revertEntity.RevMessage;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
@@ -15,10 +18,7 @@ import org.dom4j.Element;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by a07 on 2017/5/7.
@@ -190,4 +190,44 @@ public class WechatUtil {
         return access_token;
     }
 
+    /**
+     * 获取用户列表
+     *
+     * @param access_token
+     * @return
+     */
+    public static List<String> getOpenId(String access_token) {
+        String url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=" + access_token;
+        CloseableHttpResponse response = null;
+        List<String> list = new ArrayList<>();
+        try {
+            HttpGet httpGet = new HttpGet(url);
+            response = HttpClients.createDefault().execute(httpGet);
+            String result = EntityUtils.toString(response.getEntity());
+            JSONObject object = JSONObject.parseObject(result);
+            if (object.containsKey("data")) {
+                String data = object.getString("data");
+                JSONObject dataobj = JSONObject.parseObject(data);
+                JSONArray array = JSONArray.parseArray(dataobj.getString("openid"));
+                if (array.size() > 0) {
+                    for (int i = 0; i < array.size(); i++) {
+                        list.add(String.valueOf(array.get(i)));
+                    }
+                }
+            }
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
+    }
 }

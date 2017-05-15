@@ -12,6 +12,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Created by a07 on 2017/5/14.
@@ -24,7 +25,7 @@ public class MaterialUtil {
     private static String ACCESS_TOKEN = "";
 
     /**
-     * 素材上传
+     * 图文素材上传
      *
      * @return json字符串
      */
@@ -42,7 +43,7 @@ public class MaterialUtil {
             object.put("articles", array);
             //调用接口
             HttpPost httpPost = new HttpPost(addArticlesUrl + ACCESS_TOKEN);
-            httpPost.setEntity(new StringEntity(object.toJSONString()));
+            httpPost.setEntity(new StringEntity(URLEncoder.encode(object.toJSONString(),"UTF-8")));
             CloseableHttpResponse response = HttpClients.createDefault().execute(httpPost);
             result = EntityUtils.toString(response.getEntity());
         } catch (UnsupportedEncodingException e) {

@@ -1,4 +1,5 @@
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.xstream.XStream;
 import com.wechat.receiveEntity.AccessTokenEntity;
@@ -26,7 +27,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -202,7 +205,7 @@ public class TestCase {
             String jsonString = JSON.toJSONString(a);
             System.out.println(jsonString);
             entity = JSONObject.parseObject(object.toJSONString(), AccessTokenEntity.class);
-//            TestPOJO receiveEntity = JSON.parseObject(jsonString, TestPOJO.class);
+//          TestPOJO receiveEntity = JSON.parseObject(jsonString, TestPOJO.class);
             System.out.println(entity);
         }
     }
@@ -335,5 +338,67 @@ public class TestCase {
         String url = "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=" + token + "&type=image";
         HttpPost httpPost = new HttpPost(url);
 
+    }
+
+    @Test
+    public void test19() {
+        String send = "<xml>\n" +
+                "<ToUserName><![CDATA[toUser]]></ToUserName>\n" +
+                "<FromUserName><![CDATA[FromUser]]></FromUserName>\n" +
+                "<CreateTime>123456789</CreateTime>\n" +
+                "<MsgType><![CDATA[event]]></MsgType>\n" +
+                "<Event><![CDATA[CLICK]]></Event>\n" +
+                "<EventKey><![CDATA[Today_Weather]]></EventKey>\n" +
+                "</xml>";
+        HttpPost post = new HttpPost("http://123.207.15.204/wechatDemo/io.do");
+        try {
+            post.setEntity(new StringEntity(send));
+            HttpResponse response = HttpClients.createDefault().execute(post);
+            System.out.println(response.getStatusLine());
+            if (response.getStatusLine().getStatusCode() == 200) {
+                System.out.println("success");
+            }
+            System.out.println(EntityUtils.toString(response.getEntity()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test20() {
+        Jedis jedis = RedisConnUtil.getConn();
+        System.out.println(jedis.get("access_token"));
+    }
+
+    @Test
+    public void test21() {
+        JSONArray aa = new JSONArray();
+        aa.add("");
+        aa.add("OPENID1");
+        aa.add("OPENID2");
+
+        JSONObject ooo = new JSONObject();
+        ooo.put("openid", aa);
+
+        JSONObject oo = new JSONObject();
+        oo.put("total", 2);
+        oo.put("count", 2);
+        oo.put("data", ooo);
+        oo.put("next_openid", "NEXT_OPENID");
+
+        List<String> list = new ArrayList<>();
+        JSONObject object = JSONObject.parseObject(oo.toJSONString());
+        System.out.println("===" + object);
+        if (object.containsKey("data")) {
+            String data = object.getString("data");
+            JSONObject dataobj = JSONObject.parseObject(data);
+            JSONArray array = JSONArray.parseArray(dataobj.getString("openid"));
+            if (array.size() > 0) {
+                for (int i = 0; i < array.size(); i++) {
+                    list.add(String.valueOf(array.get(i)));
+                }
+            }
+        }
+        System.out.println(list);
     }
 }

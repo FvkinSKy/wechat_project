@@ -93,9 +93,9 @@ public class MenuUtil {
      */
     public static String buildButtonJson() {
         ClickButton clickButton = new ClickButton();
-        clickButton.setName("单击按钮");
+        clickButton.setName("今日天气");
         clickButton.setType("click");
-        clickButton.setKey("H5nCy9pZlaCSjLQ1sMg0LSDFXfUg3iNicKuSbDHBTuI");
+        clickButton.setKey("Today_Weather");
 
         ViewButton viewButton = new ViewButton();
         viewButton.setName("跳转按钮");

@@ -87,7 +87,7 @@ public class WechatIoServlet extends HttpServlet {
             String result = "";
             //事件和消息分开处理
             if (type.equals("event")) {//事件处理
-
+                result = WechatController.eventControl(map);
             } else {//消息处理
                 //组装消息返回数据
                 result = WechatController.flowControl(map);
