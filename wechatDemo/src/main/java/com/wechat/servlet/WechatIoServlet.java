@@ -1,6 +1,5 @@
 package com.wechat.servlet;
 
-import com.wechat.autotask.AutoTaskManager;
 import com.wechat.controller.WechatController;
 import com.wechat.util.WechatUtil;
 
@@ -102,10 +101,10 @@ public class WechatIoServlet extends HttpServlet {
         }
     }
 
-    @Override
-    public void init() throws ServletException {
-        System.out.println("初始化自动任务");
-        //初始化启用自动任务
-        AutoTaskManager.start();
-    }
+//    @Override
+//    public void init() throws ServletException {
+//        System.out.println("初始化自动任务");
+//        //初始化启用自动任务
+//        AutoTaskManager.start();
+//    }
 }

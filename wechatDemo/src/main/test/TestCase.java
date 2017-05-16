@@ -3,7 +3,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.thoughtworks.xstream.XStream;
 import com.wechat.receiveEntity.AccessTokenEntity;
-import com.wechat.receiveEntity.RecNormalMsg;
 import com.wechat.revertEntity.Articles;
 import com.wechat.revertEntity.IncludeImage;
 import com.wechat.revertEntity.RevImage;
@@ -25,7 +24,6 @@ import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,48 +75,48 @@ public class TestCase {
     }
 
 
-    @Test
-    public void test2() {
-        RecNormalMsg normalMsg = null;
-        try {
-            Class<?> c = Class.forName("com.wechat.receiveEntity.RecNormalMsg");
-            normalMsg = (RecNormalMsg) c.newInstance();
-//            Field[] f = c.getDeclaredFields();
-            Field[] f = c.getFields();
-            for (int i = 0; i < f.length; i++) {
-                Field field = f[i];
-                System.out.println(field.getName());
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Test
+//    public void test2() {
+//        RecNormalMsg normalMsg = null;
+//        try {
+//            Class<?> c = Class.forName("com.wechat.receiveEntity.RecNormalMsg");
+//            normalMsg = (RecNormalMsg) c.newInstance();
+////            Field[] f = c.getDeclaredFields();
+//            Field[] f = c.getFields();
+//            for (int i = 0; i < f.length; i++) {
+//                Field field = f[i];
+//                System.out.println(field.getName());
+//            }
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-    @Test
-    public void test3() {
-        RecNormalMsg normalMsg = null;
-        try {
-            Class<?> c = Class.forName("com.wechat.receiveEntity.RecNormalMsg");
-            normalMsg = (RecNormalMsg) c.newInstance();
-            Field field[] = c.getDeclaredFields();
-            Field.setAccessible(field, true);
-            Field fields[] = c.getFields();
-            Field.setAccessible(fields, true);
-            for (int i = 0; i < fields.length; i++) {
-                System.out.println(fields[i].getName());
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Test
+//    public void test3() {
+//        RecNormalMsg normalMsg = null;
+//        try {
+//            Class<?> c = Class.forName("com.wechat.receiveEntity.RecNormalMsg");
+//            normalMsg = (RecNormalMsg) c.newInstance();
+//            Field field[] = c.getDeclaredFields();
+//            Field.setAccessible(field, true);
+//            Field fields[] = c.getFields();
+//            Field.setAccessible(fields, true);
+//            for (int i = 0; i < fields.length; i++) {
+//                System.out.println(fields[i].getName());
+//            }
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Test
     public void test4() {
@@ -152,8 +150,8 @@ public class TestCase {
 
     @Test
     public void test7() throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchFieldException {
-        RecNormalMsg normalMsg = null;
-        Class<?> c = Class.forName("com.wechat.receiveEntity.RecNormalMsg");
+//        RecNormalMsg normalMsg = null;
+//        Class<?> c = Class.forName("com.wechat.receiveEntity.RecNormalMsg");
 
 //        Method method[] = c.getMethods();
 //        for (int i=0;i<method.length;i++){

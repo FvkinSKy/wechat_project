@@ -9,6 +9,8 @@ import com.wechat.revertEntity.RevMessage;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.dom4j.Document;
@@ -16,6 +18,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -229,5 +232,60 @@ public class WechatUtil {
             }
         }
         return list;
+    }
+
+    /**
+     * 根据openId批量发送消息
+     *
+     * @param access_token 凭证
+     * @param type         消息类型 图片（image）、视频（video）、语音 （voice）、图文（news）、文字（text）
+     * @param mediaId      素材ID
+     * @param openId       用户列表
+     * @param msg          文字消息内容
+     */
+    public static boolean batchSendMessageByOpenId(String access_token, String type, String mediaId, List<String> openId, String msg) {
+        String url = "https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=" + access_token;
+        CloseableHttpResponse response = null;
+        try {
+            JSONArray array = new JSONArray();
+            for (String id : openId) {
+                array.add(id);
+            }
+            JSONObject object = new JSONObject();
+            object.put("touser", array);
+            HttpPost httpPost = new HttpPost(url);
+            if ("text".equals(type)) {//文字消息
+                object.put("msgtype", "text");
+                JSONObject textObj = new JSONObject();
+                textObj.put("content", msg);//消息
+                object.put("text", textObj);
+            } else if ("news".equals(type)) {//图文消息
+
+            } else if ("voice".equals(type)) {//语音
+
+            } else if ("video".equals(type)) {//视频
+
+            } else if ("image".equals(type)) {//图片
+
+            }
+            httpPost.setEntity(new StringEntity(URLEncoder.encode(object.toJSONString(), "UTF-8")));
+            response = HttpClients.createDefault().execute(httpPost);
+            String result = EntityUtils.toString(response.getEntity());
+            JSONObject resultObj = JSONObject.parseObject(result);
+            if (resultObj.getInteger("errcode") == 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }
